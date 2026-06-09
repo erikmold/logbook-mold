@@ -1,2 +1,1912 @@
-# logbook-mold
-log book mold
+<script>
+  // Ganti "mtin2026" dengan password yang Anda inginkan
+  var password = "rahasia123";
+  var input = prompt("Masukkan Password untuk Mengakses Halaman Ini:");
+
+  if (input !== password) {
+    alert("Password salah! Akses ditolak.");
+    window.location.href = "about:blank"; // Mengalihkan ke halaman kosong jika salah
+  }
+</script><!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50 text-slate-800">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT. MORIROKU TECHNOLOGY INDONESIA - Maintenance Mold Log Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#0066cc', /* Moriroku corporate blue accent */
+                            600: '#0052a3',
+                            900: '#032040',
+                        },
+                        industry: {
+                            light: '#f8fafc',
+                            card: '#ffffff',
+                            border: '#e2e8f0',
+                            textMain: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans antialiased text-slate-800 bg-slate-50">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3.5">
+                <div class="h-12 flex items-center">
+                    <img src="https://placehold.co/120x48/032040/ffffff?text=MORIROKU" 
+                         alt="Moriroku Logo" 
+                         class="h-12 w-auto object-contain rounded-lg shadow-sm border border-slate-100 bg-slate-50 p-0.5"
+                         onerror="this.onerror=null; this.src='https://placehold.co/120x48/032040/ffffff?text=MORIROKU';">
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold tracking-wider text-slate-900">
+                        PT. MORIROKU TECHNOLOGY INDONESIA
+                    </h1>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-widest flex items-center gap-1.5">
+                        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Divisi Maintenance Mold — Digital Log Book & Daily Shots Tracker
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">
+                <div class="text-right hidden sm:block">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Waktu Sistem (WIB)</p>
+                    <p id="live-clock" class="text-xs font-mono text-emerald-600 font-bold">--:--:-- WIB</p>
+                </div>
+                <div class="h-8 w-[1px] bg-slate-300 hidden sm:block"></div>
+                <div class="flex items-center space-x-2">
+                    <span class="flex h-2.5 w-2.5 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-xs font-semibold text-slate-700">Database Aktif</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                <div class="absolute -right-4 -bottom-4 text-slate-100/80 text-7xl transition-transform group-hover:scale-110 duration-300">
+                    <i class="fa-solid fa-cubes"></i>
+                </div>
+                <div class="z-10">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Mold Aktif</p>
+                    <p id="kpi-total-mold" class="text-3xl font-extrabold text-slate-900 mt-1">0</p>
+                    <span class="text-[10px] text-slate-400 mt-2 block">Terdaftar dalam database</span>
+                </div>
+                <div class="p-3 bg-brand-50 rounded-lg text-brand-500 z-10 border border-brand-100">
+                    <i class="fa-solid fa-cubes text-xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                <div class="absolute -right-4 -bottom-4 text-slate-100/80 text-7xl transition-transform group-hover:scale-110 duration-300">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                </div>
+                <div class="z-10">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Aktivitas Preventive</p>
+                    <p id="kpi-total-pm" class="text-3xl font-extrabold text-blue-600 mt-1">0</p>
+                    <span class="text-[10px] text-slate-400 mt-2 block">Pemeliharaan Terjadwal (PM)</span>
+                </div>
+                <div class="p-3 bg-blue-50 rounded-lg text-blue-500 z-10 border border-blue-100">
+                    <i class="fa-solid fa-screwdriver-wrench text-xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                <div class="absolute -right-4 -bottom-4 text-slate-100/80 text-7xl transition-transform group-hover:scale-110 duration-300">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="z-10">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Aktivitas Corrective</p>
+                    <p id="kpi-total-cm" class="text-3xl font-extrabold text-amber-600 mt-1">0</p>
+                    <span class="text-[10px] text-slate-400 mt-2 block">Perbaikan Kerusakan (CM)</span>
+                </div>
+                <div class="p-3 bg-amber-50 rounded-lg text-amber-500 z-10 border border-amber-100">
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                <div class="absolute -right-4 -bottom-4 text-slate-100/80 text-7xl transition-transform group-hover:scale-110 duration-300">
+                    <i class="fa-solid fa-gauge-high"></i>
+                </div>
+                <div class="z-10 pr-4 w-3/4">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Shot Mold Tertinggi</p>
+                    <p id="kpi-highest-shot" class="text-base font-bold text-slate-900 mt-1 truncate">N/A</p>
+                    <span id="kpi-highest-shot-value" class="text-xs text-slate-500 block mt-1 font-mono">0 Shots</span>
+                </div>
+                <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600 z-10 border border-emerald-100">
+                    <i class="fa-solid fa-fire-flame-curved text-xl"></i>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Quick Search & Directory Section -->
+            <div class="lg:col-span-6 bg-white border border-slate-200 rounded-xl shadow-sm p-5 flex flex-col justify-between space-y-4">
+                <div>
+                    <div class="flex items-center space-x-2 pb-2 border-b border-slate-100">
+                        <i class="fa-solid fa-address-book text-brand-500"></i>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800">Direktori & Cari Cepat Mold</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Cari spesifikasi, status terakhir, dan beban produksi mold berdasarkan <b>Model Unit</b>, <b>Resin Code</b> atau <b>Part Number</b> secara seketika.</p>
+                </div>
+
+                <div class="bg-slate-100 p-1.5 rounded-lg border border-slate-200/80">
+                    <div class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 px-1.5 flex justify-between items-center">
+                        <span>Klasifikasi Mold (Dashboard Filter)</span>
+                        <span class="text-slate-400 font-mono text-[9px]">Pilih untuk menyaring direktori</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1">
+                        <button onclick="setDirectoryClassification('all')" id="btn-class-all"
+                            class="px-2 py-1.5 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5 bg-brand-500 text-white shadow-xs">
+                            <i class="fa-solid fa-layer-group text-[10px]"></i>
+                            <span>Semua</span>
+                            <span id="badge-count-all" class="bg-white/20 text-white px-1.5 py-0.2 rounded-full font-mono text-[9px] font-bold">0</span>
+                        </button>
+                        <button onclick="setDirectoryClassification('active')" id="btn-class-active"
+                            class="px-2 py-1.5 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5 bg-white text-slate-600 hover:bg-slate-50 border border-slate-200">
+                            <i class="fa-solid fa-circle-check text-emerald-500 text-[10px]"></i>
+                            <span>Active</span>
+                            <span id="badge-count-active" class="bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded-full font-mono text-[9px] font-bold">0</span>
+                        </button>
+                        <button onclick="setDirectoryClassification('discontinued')" id="btn-class-discontinued"
+                            class="px-2 py-1.5 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5 bg-white text-slate-600 hover:bg-slate-50 border border-slate-200">
+                            <i class="fa-solid fa-circle-minus text-rose-500 text-[10px]"></i>
+                            <span>Svc Mold</span>
+                            <span id="badge-count-discontinued" class="bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded-full font-mono text-[9px] font-bold">0</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" id="directory-search" onkeyup="handleDirectorySearch()" placeholder="Masukkan Model, Part Number, Resin Code..." 
+                        class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-9 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                </div>
+
+                <div class="max-h-[220px] overflow-y-auto border border-slate-100 rounded-lg bg-slate-50 p-2 text-xs space-y-2" id="directory-results">
+                    <div class="text-slate-400 text-center py-8 italic">
+                        <i class="fa-solid fa-search text-lg block mb-1"></i>
+                        Belum ada mold terdaftar dalam database. Silakan input data terlebih dahulu.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Activity Resume Section -->
+            <div class="lg:col-span-6 bg-white border border-slate-200 rounded-xl shadow-sm p-5 flex flex-col justify-between space-y-4">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-calendar-days text-brand-500"></i>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800">Resume Aktivitas Bulanan</h3>
+                    </div>
+                    <select id="resume-year-select" onchange="renderMonthlyResume()" class="bg-slate-100 border border-slate-200 rounded px-2 py-0.5 text-xs font-bold text-slate-700 cursor-pointer">
+                        <!-- Diisi secara dinamis oleh JavaScript hingga tahun 2045 -->
+                    </select>
+                </div>
+                <p class="text-[11px] text-slate-400"><i class="fa-solid fa-mouse-pointer text-brand-500 mr-1"></i>Klik pada angka <b class="text-blue-500">PM</b>, <b class="text-amber-500">CM</b>, <b class="text-purple-500">DSR</b>, atau <b class="text-slate-600">Total</b> untuk menampilkan rincian data mold pada bulan terkait.</p>
+
+                <div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5" id="monthly-resume-grid"></div>
+            </div>
+        </section>
+
+        <section class="bg-white border border-slate-200 rounded-xl shadow-md p-6 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div class="flex items-center space-x-2.5">
+                    <div class="p-2 bg-blue-500 text-white rounded-lg shadow-sm">
+                        <i class="fa-solid fa-hourglass-start text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 tracking-wide uppercase">Konsol Perencanaan & Proyeksi PM Mold</h3>
+                        <p class="text-xs text-slate-500">Estimasi jadwal perawatan berkala (Active: 6-Bulanan | Svc/Discontinued: 1-Tahunan) berdasarkan histori log terakhir.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-semibold text-slate-500">Tahun Rencana PM:</span>
+                    <select id="projection-year-select" onchange="renderPMProjection()" class="bg-slate-100 border border-slate-200 rounded px-3 py-1 text-xs font-bold text-slate-700 cursor-pointer">
+                        <!-- Diisi secara dinamis oleh JavaScript hingga tahun 2045 -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-8 space-y-3">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block"><i class="fa-solid fa-circle-nodes text-blue-500 mr-1.5"></i>Peta Distribusi Beban PM Per Bulan</span>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3" id="pm-projection-grid"></div>
+                    <p class="text-[10px] text-slate-400 italic flex items-center gap-1 mt-2">
+                        <i class="fa-solid fa-circle-info text-blue-500"></i>
+                        Klik pada kartu bulan untuk melihat daftar nama, model, dan jenis cetakan yang dijadwalkan PM pada bulan tersebut.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-4 bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between min-h-[220px]">
+                    <div>
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                            <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fa-regular fa-calendar-check text-blue-600"></i>
+                                <span id="projected-month-title">Pilih Bulan PM</span>
+                            </span>
+                            <span id="projected-month-badge" class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">0 Mold</span>
+                        </div>
+                        <div id="projected-month-list" class="mt-3 space-y-2 max-h-[170px] overflow-y-auto pr-1">
+                            <div class="text-slate-400 text-xs text-center py-10 italic">
+                                <i class="fa-solid fa-arrow-pointer text-lg block mb-1"></i>
+                                Silakan klik salah satu bulan di sebelah kiri untuk melihat rincian rencana PM.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-4">
+                <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest block mb-2.5 flex items-center gap-1.5">
+                    <span class="h-2 w-2 rounded-full bg-rose-500 animate-ping"></span>
+                    <i class="fa-solid fa-bell"></i> Pengawasan Logistik: Mold Overdue & Over-shot Terdeteksi
+                </span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="pm-urgency-alerts">
+                    <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-center text-xs text-slate-400 py-6 italic col-span-2">
+                        No critical PM alerts detected. All molds are operating within safely designated limits.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-4 bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden sticky top-24">
+                <!-- Tab Headers -->
+                <div class="flex border-b border-slate-200 bg-slate-50">
+                    <button id="tab-maintenance" onclick="switchFormTab('maintenance')" class="flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-brand-500 border-b-2 border-brand-500 transition-all flex items-center justify-center gap-1.5 bg-white">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> Maintenance
+                    </button>
+                    <button id="tab-daily-shot" onclick="switchFormTab('daily-shot')" class="flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition-all flex items-center justify-center gap-1.5 bg-slate-50/50">
+                        <i class="fa-solid fa-fire-flame-curved text-purple-600"></i> Daily Shots
+                    </button>
+                </div>
+
+                <!-- FORM 1: MAINTENANCE LOG (Original Form) -->
+                <form id="logForm" onsubmit="handleFormSubmit(event)" class="p-5 space-y-4">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <i id="form-icon" class="fa-solid fa-file-circle-plus text-brand-500 text-sm"></i>
+                            <h2 id="form-title" class="text-xs font-bold uppercase tracking-wider text-slate-800">Log Maintenance</h2>
+                        </div>
+                        <button id="btn-cancel-edit" type="button" onclick="resetForm()" class="hidden text-xs text-rose-600 hover:text-rose-700 bg-rose-50 px-2.5 py-1 rounded transition font-semibold">
+                            Batal Edit
+                        </button>
+                    </div>
+                    <input type="hidden" id="edit-index" value="">
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">No / Nama Mold <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                                <i class="fa-solid fa-cubes"></i>
+                            </span>
+                            <input type="text" id="mold-name" required placeholder="Ketik nama Mold secara manual..." 
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-9 pr-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+                                list="mold-options" oninput="handleMoldInput(this.value)">
+                            <datalist id="mold-options"></datalist>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            Ketik bebas. Jika nama mold pernah terdaftar, sistem akan otomatis mengisi detail di bawah.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Part Number <span class="text-rose-500">*</span></label>
+                            <input type="text" id="part-number" required placeholder="MTI-71101-T5A"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Model / Unit <span class="text-rose-500">*</span></label>
+                            <input type="text" id="model-name" required placeholder="Honda Jazz 2026"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <span class="text-[10px] font-bold text-brand-500 uppercase tracking-widest block mb-2"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Spesifikasi Mesin Utama</span>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">No. Mesin <span class="text-rose-500">*</span></label>
+                                <input type="text" id="machine-number" required placeholder="Contoh: INJ-08"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+                                    list="machine-options">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Tonase <span class="text-rose-500">*</span></label>
+                                <input type="text" id="tonnage" required placeholder="Contoh: 350 Ton"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+                                    list="tonnage-options">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-2"><i class="fa-solid fa-shuffle text-[9px] mr-1"></i>Opsi Mesin Ke-2 (Fleksibel)</span>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">No. Mesin 2</label>
+                                <input type="text" id="machine-number-2" placeholder="Contoh: INJ-09"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+                                    list="machine-options">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Tonase 2</label>
+                                <input type="text" id="tonnage-2" placeholder="Contoh: 450 Ton"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+                                    list="tonnage-options">
+                            </div>
+                        </div>
+                    </div>
+
+                    <datalist id="machine-options">
+                        <option value="INJ-01"><option value="INJ-02"><option value="INJ-03"><option value="INJ-04"><option value="INJ-05">
+                        <option value="INJ-06"><option value="INJ-07"><option value="INJ-08"><option value="INJ-09"><option value="INJ-10">
+                    </datalist>
+
+                    <datalist id="tonnage-options">
+                        <option value="50 Ton"><option value="80 Ton"><option value="110 Ton"><option value="150 Ton"><option value="220 Ton">
+                        <option value="350 Ton"><option value="450 Ton"><option value="550 Ton"><option value="650 Ton"><option value="850 Ton">
+                        <option value="1300 Ton"><option value="2500 Ton">
+                    </datalist>
+
+                    <div class="grid grid-cols-2 gap-3 border-t border-slate-100 pt-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Customer <span class="text-rose-500">*</span></label>
+                            <input type="text" id="customer-name" required placeholder="Contoh: HPM"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+                                list="customer-options">
+                            <datalist id="customer-options">
+                                <option value="PT. Honda Prospect Motor (HPM)">
+                                <option value="PT. Toyota Motor Manufacturing Indonesia (TMMIN)">
+                                <option value="PT. Astra Daihatsu Motor (ADM)">
+                                <option value="PT. Suzuki Indomobil Motor (SIM)">
+                            </datalist>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Waktu Aktivitas <span class="text-rose-500">*</span></label>
+                            <input type="datetime-local" id="activity-time" required
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition font-mono">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 border-t border-slate-100 pt-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1.5" title="Material Utama">Base Resin <span class="text-rose-500">*</span></label>
+                            <input type="text" id="material-resin" required placeholder="Contoh: ABS"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-2 text-xs text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"
+                                list="resin-options">
+                            <datalist id="resin-options">
+                                <option value="PP"><option value="PP-TD20"><option value="ABS"><option value="PC"><option value="PC-ABS"><option value="POM"><option value="PA66">
+                            </datalist>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1.5" title="Kode Resin Spesifik">Resin Code <span class="text-rose-500">*</span></label>
+                            <input type="text" id="resin-code" required placeholder="Tulis Manual..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-2 text-xs text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">Runner <span class="text-rose-500">*</span></label>
+                            <select id="runner-type" required 
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-1.5 text-xs text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition cursor-pointer">
+                                <option value="Cold Runner">Cold Runner</option>
+                                <option value="Hot Runner">Hot Runner</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Kategori Molding <span class="text-rose-500">*</span></label>
+                            <select id="mold-category" required 
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition cursor-pointer">
+                                <option value="Molding Active">🟢 Molding Active</option>
+                                <option value="Discontinued (Service Mold)">🔴 Discontinued (Svc)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Status Akhir Mold <span class="text-rose-500">*</span></label>
+                            <select id="mold-status" required 
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition cursor-pointer">
+                                <option value="Running" class="text-emerald-600 font-semibold">Running (Siap Produksi)</option>
+                                <option value="Finish Maintenance" class="text-blue-600 font-semibold">Finish Ready (Menunggu Setup)</option>
+                                <option value="Pending Sparepart" class="text-rose-600 font-semibold">Pending Sparepart (Stop Line)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Jenis Aktivitas <span class="text-rose-500">*</span></label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="relative flex items-center justify-center p-2.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer select-none hover:bg-slate-100 transition group">
+                                <input type="radio" name="activity-type" value="Preventive" checked class="sr-only peer">
+                                <div class="peer-checked:bg-blue-50 peer-checked:border-blue-500 absolute inset-0 rounded-lg border-2 border-transparent transition pointer-events-none"></div>
+                                <span class="text-[11px] font-bold text-slate-600 peer-checked:text-blue-600 flex items-center gap-1">
+                                    <i class="fa-solid fa-calendar-check text-slate-400 peer-checked:text-blue-500 group-hover:scale-110 transition"></i>
+                                    PM (Acu)
+                                </span>
+                            </label>
+                            <label class="relative flex items-center justify-center p-2.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer select-none hover:bg-slate-100 transition group">
+                                <input type="radio" name="activity-type" value="Corrective" class="sr-only peer">
+                                <div class="peer-checked:bg-amber-50 peer-checked:border-amber-500 absolute inset-0 rounded-lg border-2 border-transparent transition pointer-events-none"></div>
+                                <span class="text-[11px] font-bold text-slate-600 peer-checked:text-amber-600 flex items-center gap-1">
+                                    <i class="fa-solid fa-triangle-exclamation text-slate-400 peer-checked:text-amber-500 group-hover:scale-110 transition"></i>
+                                    CM (Acu)
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Detail Masalah / Deskripsi Kondisi <span class="text-rose-500">*</span></label>
+                        <textarea id="detail-problem" required rows="2" placeholder="Tuliskan kondisi mold, kerusakan yang ditemukan..." 
+                            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Tindakan Perbaikan / Langkah Aktivitas <span class="text-rose-500">*</span></label>
+                        <textarea id="action-taken" required rows="2" placeholder="Tindakan koreksi yang diambil..." 
+                            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5" title="Hanya Angka Acuan/Milestone Kegiatan">Shot Acuan PM/CM <span class="text-rose-500">*</span></label>
+                            <input type="number" id="shot-count" required min="0" placeholder="Contoh: 145000"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition font-mono font-semibold">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Nama Teknisi / PIC <span class="text-rose-500">*</span></label>
+                            <input type="text" id="pic-name" required placeholder="Contoh: Budi Santoso"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-submit"
+                        class="w-full mt-2 bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold py-2.5 px-4 rounded-lg shadow-md transition-all flex items-center justify-center gap-2 transform active:scale-[0.98]">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span id="submit-text">Simpan Data Log</span>
+                    </button>
+                </form>
+
+                <!-- FORM 2: DAILY SHOT ACCUMULATOR FORM WITH MODEL SEARCH -->
+                <form id="dailyShotForm" onsubmit="handleDailyShotSubmit(event)" class="p-5 space-y-4 hidden">
+                    <div class="flex items-center space-x-2 pb-2 border-b border-slate-100">
+                        <i class="fa-solid fa-fire-flame-curved text-purple-500"></i>
+                        <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Quick Daily Shots Entry</h2>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Cari & Pilih Mold Aktif <span class="text-purple-500">*</span></label>
+                        <div class="relative mb-2">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-slate-400 pointer-events-none">
+                                <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
+                            </span>
+                            <input type="text" id="ds-mold-search" oninput="filterDailyShotMolds(this.value)" placeholder="Ketik Nama Mold atau Tipe Model..." 
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-1.5 pl-8 pr-3 text-xs text-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition">
+                        </div>
+                        <select id="ds-mold-select" required onchange="handleDailyShotMoldChange(this.value)"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition cursor-pointer">
+                            <option value="">-- Pilih Mold --</option>
+                        </select>
+                        <p class="text-[10px] text-slate-400 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-info text-purple-500"></i>
+                            Ketik kata kunci nama mold atau model unit di kolom di atas untuk menyaring daftar pilihan.
+                        </p>
+                    </div>
+
+                    <!-- Mold Live Specs Summary Card -->
+                    <div id="ds-mold-info-card" class="bg-purple-50/50 border border-purple-100 rounded-xl p-3.5 hidden space-y-2 text-xs">
+                        <div class="flex justify-between items-center font-bold text-slate-800">
+                            <span id="ds-info-name" class="text-sm font-extrabold tracking-wide text-purple-950">Mold</span>
+                            <span id="ds-info-category">Active</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-1.5 text-slate-500 mt-1">
+                            <div>Part No: <span id="ds-info-part" class="font-semibold text-slate-700 block">-</span></div>
+                            <div>Model: <span id="ds-info-model" class="font-semibold text-slate-700 block">-</span></div>
+                        </div>
+                        <div class="bg-purple-100/60 text-purple-800 font-extrabold px-3 py-2 rounded-lg flex justify-between items-center mt-2">
+                            <span>Total Akumulasi Saat Ini:</span>
+                            <span id="ds-info-shots" class="font-mono text-sm">0</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Tambahan Shoot Hari Ini (Production Shots) <span class="text-purple-500">*</span></label>
+                        <input type="number" id="ds-increment" required min="1" placeholder="Contoh: 1500" oninput="calculateAccumulatedShots()"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition font-mono font-bold text-purple-600">
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs flex justify-between items-center">
+                        <span class="font-semibold text-slate-500">Estimasi Total Terakumulasi:</span>
+                        <span id="ds-projected-shots" class="font-mono font-extrabold text-slate-800 text-sm">0</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Nama PIC <span class="text-purple-500">*</span></label>
+                            <input type="text" id="ds-pic" required placeholder="Contoh: Budi Santoso"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Tanggal Record <span class="text-purple-500">*</span></label>
+                            <input type="datetime-local" id="ds-time" required
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition font-mono">
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full mt-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-2.5 px-4 rounded-lg shadow-md transition-all flex items-center justify-center gap-2 transform active:scale-[0.98]">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Akumulasikan & Simpan Shots</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="lg:col-span-8 space-y-4">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                    <div class="relative flex-grow max-w-lg">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 pointer-events-none">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input type="text" id="search-input" onkeyup="filterData()" placeholder="Cari Log berdasarkan No. Mold, Part Number, Resin Code, PIC..." 
+                            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-9 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select id="filter-mold-category" onchange="filterData()" class="bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-700 font-bold focus:outline-none cursor-pointer">
+                            <option value="">Semua Kategori</option>
+                            <option value="Molding Active">Molding Active</option>
+                            <option value="Discontinued (Service Mold)">Discontinued / Service</option>
+                        </select>
+                        <select id="filter-activity" onchange="filterData()" class="bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-700 font-bold focus:outline-none cursor-pointer">
+                            <option value="">Semua Aktivitas</option>
+                            <option value="Preventive">Preventive</option>
+                            <option value="Corrective">Corrective</option>
+                            <option value="Daily Shoot Record">Daily Shoot Record (DSR)</option>
+                        </select>
+                        <select id="filter-status" onchange="filterData()" class="bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-700 font-bold focus:outline-none cursor-pointer">
+                            <option value="">Semua Status</option>
+                            <option value="Running">Running</option>
+                            <option value="Finish Maintenance">Finish Maintenance</option>
+                            <option value="Pending Sparepart">Pending Sparepart</option>
+                        </select>
+                        <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs py-2 px-3 rounded-lg flex items-center gap-1.5 transition transform active:scale-95">
+                            <i class="fa-solid fa-file-excel"></i> Export Excel
+                        </button>
+                        <button onclick="requestWipeDatabase()" class="bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs py-2 px-3 rounded-lg flex items-center gap-1.5 transition transform active:scale-95">
+                            <i class="fa-solid fa-dumpster-fire"></i> Wipe DB
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-xl shadow-md overflow-hidden">
+                    <div class="px-5 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-list-check text-brand-500"></i>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800">Log Book List</h3>
+                        </div>
+                        <span id="showing-records" class="text-xs bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full font-mono font-semibold">
+                            Menampilkan 0 data
+                        </span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-slate-50/80 text-[10px] text-slate-500 uppercase tracking-widest font-bold border-b border-slate-200">
+                                    <th class="py-3.5 px-4 text-center w-12">No</th>
+                                    <th class="py-3.5 px-4">Tanggal / Jam</th>
+                                    <th class="py-3.5 px-4">Info Mold & Customer</th>
+                                    <th class="py-3.5 px-4 text-center">Jenis</th>
+                                    <th class="py-3.5 px-4">Target PM Berikutnya</th>
+                                    <th class="py-3.5 px-4 max-w-xs">Detail Deskripsi / Log Record</th>
+                                    <th class="py-3.5 px-4 text-right">Shot Terakhir</th>
+                                    <th class="py-3.5 px-4 text-center">PIC</th>
+                                    <th class="py-3.5 px-4 text-center">Status</th>
+                                    <th class="py-3.5 px-4 text-center w-24">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="log-table-body" class="divide-y divide-slate-100 text-slate-700 text-sm"></tbody>
+                        </table>
+                        <div id="table-empty-state" class="hidden p-12 flex flex-col items-center justify-center text-center space-y-4">
+                            <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                                <i class="fa-solid fa-box-open text-3xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-semibold text-slate-700">Belum ada Log Maintenance</h4>
+                                <p class="text-xs text-slate-400 max-w-sm mt-1">Silakan tambahkan data melalui form input di sebelah kiri atau hapus filter pencarian.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-auto py-4">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 2026 PT. Moriroku Technology Indonesia. All rights reserved.</p>
+            <p class="font-mono text-[10px] tracking-wider text-slate-400">MOLD MAINTENANCE ENGINE VER 3.3 • DAILY SHOT ACCUMULATOR ACTIVE</p>
+        </div>
+    </footer>
+
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2.5 pointer-events-none"></div>
+
+    <!-- Confirm Dialog Modal -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[100] overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-sm" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white border border-slate-200 rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+                <div class="p-6">
+                    <div class="flex items-center space-x-3 text-amber-500 mb-4">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                        <h3 class="text-lg font-bold text-slate-900" id="modal-title">Konfirmasi Tindakan</h3>
+                    </div>
+                    <p class="text-sm text-slate-500" id="modal-description">Apakah Anda yakin? Tindakan ini tidak dapat dibatalkan.</p>
+                </div>
+                <div class="bg-slate-50 px-6 py-4 flex justify-end space-x-3 border-t border-slate-200">
+                    <button id="confirm-cancel-btn" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition">Batal</button>
+                    <button id="confirm-delete-btn" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition">Ya, Eksekusi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Key Modal -->
+    <div id="security-modal" class="hidden fixed inset-0 z-[110] overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-sm" aria-hidden="true" onclick="closeSecurityModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white border border-slate-200 rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+                <div class="p-6">
+                    <div class="flex items-center space-x-3 text-brand-500 mb-4">
+                        <i class="fa-solid fa-shield-halved text-2xl"></i>
+                        <h3 class="text-lg font-bold text-slate-900">Otorisasi Diperlukan</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4" id="security-modal-desc">Silakan masukkan password maintenance untuk mengonfirmasi.</p>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Password Key</label>
+                        <input type="password" id="security-password-input" placeholder="Ketik password di sini..." class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-sm text-slate-950 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                        <p id="security-error-msg" class="text-rose-500 text-xs font-semibold mt-1.5 hidden"><i class="fa-solid fa-circle-xmark mr-1"></i> Password salah!</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 px-6 py-4 flex justify-end space-x-3 border-t border-slate-200">
+                    <button id="security-cancel-btn" onclick="closeSecurityModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition">Batal</button>
+                    <button id="security-confirm-btn" onclick="verifySecurityAction()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-bold transition">Konfirmasi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline History Mold modal -->
+    <div id="history-modal" class="hidden fixed inset-0 z-[100] overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-12 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-sm" aria-hidden="true" onclick="closeHistoryModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white border border-slate-200 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+                <div class="bg-gradient-to-r from-slate-900 to-brand-900 text-white px-6 py-4 flex justify-between items-center border-b border-slate-800">
+                    <div class="flex items-center space-x-2.5">
+                        <i class="fa-solid fa-clock-rotate-left text-brand-400 text-lg"></i>
+                        <div>
+                            <h3 class="text-base font-bold uppercase tracking-wider" id="history-mold-title">Histori Aktivitas Mold</h3>
+                            <p class="text-[10px] text-slate-300" id="history-mold-subtitle">Lembar Rekam Jejak Siklus Hidup Cetakan</p>
+                        </div>
+                    </div>
+                    <button onclick="closeHistoryModal()" class="text-slate-400 hover:text-white transition text-lg p-1.5 rounded-lg hover:bg-slate-800/50"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-slate-700" id="history-mold-stats"></div>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2"><span class="inline-block w-1.5 h-1.5 bg-brand-500 rounded-full"></span>Urutan Kronologis Perawatan & Masalah</h4>
+                        <div class="relative border-l-2 border-slate-200 ml-3 space-y-6" id="history-timeline"></div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 px-6 py-4 flex justify-end border-t border-slate-200">
+                    <button onclick="closeHistoryModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition">Tutup Histori</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resume Detail Modal (New) -->
+    <div id="resume-detail-modal" class="hidden fixed inset-0 z-[100] overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-12 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity bg-slate-900/60 backdrop-blur-sm" aria-hidden="true" onclick="closeResumeDetailModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white border border-slate-200 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="bg-gradient-to-r from-slate-950 to-brand-900 text-white px-6 py-4 flex justify-between items-center border-b border-slate-800">
+                    <div class="flex items-center space-x-2.5">
+                        <i class="fa-solid fa-list-check text-brand-400 text-lg"></i>
+                        <div>
+                            <h3 class="text-base font-bold uppercase tracking-wider" id="resume-modal-title">Daftar Aktivitas Bulanan</h3>
+                            <p class="text-[10px] text-slate-300" id="resume-modal-subtitle">Rincian data log book</p>
+                        </div>
+                    </div>
+                    <button onclick="closeResumeDetailModal()" class="text-slate-400 hover:text-white transition text-lg p-1.5 rounded-lg hover:bg-slate-800/50">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 uppercase tracking-widest font-bold border-b border-slate-200 text-[10px]">
+                                    <th class="py-2.5 px-3">Tanggal / Waktu</th>
+                                    <th class="py-2.5 px-3">Mold / Model Unit</th>
+                                    <th class="py-2.5 px-3">Kategori</th>
+                                    <th class="py-2.5 px-3 max-w-xs whitespace-normal">Masalah & Solusi Log</th>
+                                    <th class="py-2.5 px-3 text-right">Shot Terakumulasi</th>
+                                    <th class="py-2.5 px-3 text-center">PIC</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resume-detail-table-body" class="divide-y divide-slate-100 text-slate-700">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                        <div id="resume-detail-empty" class="hidden text-center py-10 text-slate-400 italic">
+                            <i class="fa-regular fa-folder-open text-2xl block mb-2"></i>
+                            Tidak ada data mold ditemukan pada parameter aktivitas bulan ini.
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 px-6 py-4 flex justify-end border-t border-slate-200">
+                    <button onclick="closeResumeDetailModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition">Tutup Detail</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const APP_STORAGE_KEY = 'moriroku_mold_maintenance_logs';
+        const SECURITY_KEY = 'maintenancemold2026';
+        
+        let logBookEntries = [];
+        let currentlyPendingDeleteIndex = null;
+        let isWipeOperation = false;
+        let authorizedActionCallback = null;
+        let selectedDirectoryClassification = 'all';
+        let monthlyPmDueMoldsData = Array.from({ length: 12 }, () => []);
+
+        window.onload = function () {
+            initClock();
+            initDefaultDateTime();
+            populateYearDropdowns();
+            initializeDatabase();
+            updateMoldDatalist();
+            updateDailyShotMoldOptions();
+            renderApp();
+            renderMonthlyResume();
+            renderPMProjection();
+            handleDirectorySearch();
+            setupSecurityListeners();
+        }
+
+        function populateYearDropdowns() {
+            const resumeSelect = document.getElementById('resume-year-select');
+            const projectionSelect = document.getElementById('projection-year-select');
+            
+            const startYear = 2024;
+            const endYear = 2045;
+            const currentYear = new Date().getFullYear();
+            
+            const generateOptions = (selectElement) => {
+                if (!selectElement) return;
+                selectElement.innerHTML = '';
+                for (let yr = startYear; yr <= endYear; yr++) {
+                    const opt = document.createElement('option');
+                    opt.value = yr;
+                    opt.textContent = yr;
+                    if (yr === currentYear) {
+                        opt.selected = true;
+                    }
+                    selectElement.appendChild(opt);
+                }
+            };
+
+            generateOptions(resumeSelect);
+            generateOptions(projectionSelect);
+        }
+
+        function initClock() {
+            const clockEl = document.getElementById('live-clock');
+            const updateClock = () => {
+                const now = new Date();
+                const options = { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+                const timeString = now.toLocaleTimeString('id-ID', options);
+                const dayOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const dateString = now.toLocaleDateString('id-ID', dayOptions);
+                clockEl.innerHTML = `${dateString} | ${timeString} WIB`;
+            };
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function initDefaultDateTime() {
+            const now = new Date();
+            const tzOffset = now.getTimezoneOffset() * 60000; 
+            const localISOTime = (new Date(now - tzOffset)).toISOString().slice(0, 16);
+            document.getElementById('activity-time').value = localISOTime;
+            if (document.getElementById('ds-time')) {
+                document.getElementById('ds-time').value = localISOTime;
+            }
+        }
+
+        function getCategoryBadge(category) {
+            if (category === 'Discontinued (Service Mold)') {
+                return `<span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border border-rose-200">🔴 Svc</span>`;
+            }
+            return `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border border-emerald-200">🟢 Active</span>`;
+        }
+
+        function getMoldCurrentShots(moldName) {
+            const key = moldName.trim().toUpperCase();
+            const dsrLogs = logBookEntries.filter(e => e.moldName.trim().toUpperCase() === key && e.activityType === 'Daily Shoot Record');
+            if (dsrLogs.length > 0) {
+                dsrLogs.sort((a, b) => new Date(b.time) - new Date(a.time));
+                return Number(dsrLogs[0].shotCount) || 0;
+            }
+            const references = logBookEntries.filter(e => e.moldName.trim().toUpperCase() === key);
+            if (references.length > 0) {
+                references.sort((a, b) => new Date(b.time) - new Date(a.time));
+                return Number(references[0].shotCount) || 0;
+            }
+            return 0;
+        }
+
+        function initializeDatabase() {
+            try {
+                const stored = localStorage.getItem(APP_STORAGE_KEY);
+                if (stored) {
+                    logBookEntries = JSON.parse(stored);
+                    let migrated = false;
+                    logBookEntries.forEach(entry => {
+                        if (!entry.id) {
+                            entry.id = 'log_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now();
+                            migrated = true;
+                        }
+                        if (entry.resinCode === undefined) {
+                            entry.resinCode = entry.materialResin || '-';
+                            migrated = true;
+                        }
+                    });
+                    if (migrated) saveToLocalStorage();
+                } else {
+                    // Populate initial mock data
+                    logBookEntries = [
+                        {
+                            id: 'log_mock01_2026',
+                            moldName: 'MTI-M001',
+                            partNumber: 'MTI-71101-T5A',
+                            model: 'Honda Brio 2024',
+                            customer: 'PT. Honda Prospect Motor (HPM)',
+                            machineNumber: 'INJ-08',
+                            tonnage: '350 Ton',
+                            machineNumber2: '',
+                            tonnage2: '',
+                            materialResin: 'PP-TD20',
+                            resinCode: 'PP-T20',
+                            runnerType: 'Cold Runner',
+                            moldCategory: 'Molding Active',
+                            activityType: 'Preventive',
+                            detailProblem: 'Routine 6-monthly check, cleaning guide pins and sliders',
+                            actionTaken: 'Polished cavity, lubricated ejector pins, tested guide action',
+                            shotCount: 125000,
+                            pic: 'Hendra Wijaya',
+                            status: 'Finish Maintenance',
+                            time: '2026-05-10T10:00'
+                        },
+                        {
+                            id: 'log_mock02_2026',
+                            moldName: 'MTI-M002',
+                            partNumber: 'MTI-72411-T9A',
+                            model: 'Honda HR-V 2025',
+                            customer: 'PT. Honda Prospect Motor (HPM)',
+                            machineNumber: 'INJ-09',
+                            tonnage: '450 Ton',
+                            machineNumber2: '',
+                            tonnage2: '',
+                            materialResin: 'ABS',
+                            resinCode: 'ABS-G30',
+                            runnerType: 'Hot Runner',
+                            moldCategory: 'Molding Active',
+                            activityType: 'Corrective',
+                            detailProblem: 'Flash on parting line, scratch on cavity surface',
+                            actionTaken: 'Welded parting line edge, polished cavity scratch, adjusted clamping tonnage',
+                            shotCount: 86000,
+                            pic: 'Budi Santoso',
+                            status: 'Running',
+                            time: '2026-06-01T14:30'
+                        },
+                        {
+                            id: 'log_mock03_2026',
+                            moldName: 'MTI-M003',
+                            partNumber: 'MTI-53111-BYD',
+                            model: 'BYD Atto 3',
+                            customer: 'PT. Astra Daihatsu Motor (ADM)',
+                            machineNumber: 'INJ-04',
+                            tonnage: '150 Ton',
+                            machineNumber2: '',
+                            tonnage2: '',
+                            materialResin: 'PC-ABS',
+                            resinCode: 'PC-ABS-MC',
+                            runnerType: 'Hot Runner',
+                            moldCategory: 'Molding Active',
+                            activityType: 'Daily Shoot Record',
+                            detailProblem: 'Pencatatan Shoot Harian (Daily Shoot Record)',
+                            actionTaken: 'Penambahan shots sebanyak +1.500, akumulasi total menjadi 45.300 shots.',
+                            shotCount: 45300,
+                            pic: 'Ahmad Yunus',
+                            status: 'Running',
+                            time: '2026-06-05T08:00'
+                        }
+                    ];
+                    saveToLocalStorage();
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal memuat penyimpanan lokal.', 'danger');
+            }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(logBookEntries));
+            } catch (err) {
+                showToast('Gagal menyimpan perubahan ke browser!', 'danger');
+            }
+        }
+
+        window.switchFormTab = function(tab) {
+            const tabMaintenance = document.getElementById('tab-maintenance');
+            const tabDailyShot = document.getElementById('tab-daily-shot');
+            const formMaintenance = document.getElementById('logForm');
+            const formDailyShot = document.getElementById('dailyShotForm');
+            
+            if (tab === 'maintenance') {
+                tabMaintenance.className = "flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-brand-500 border-b-2 border-brand-500 transition-all flex items-center justify-center gap-1.5 bg-white";
+                tabDailyShot.className = "flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition-all flex items-center justify-center gap-1.5 bg-slate-50/50";
+                formMaintenance.classList.remove('hidden');
+                formDailyShot.classList.add('hidden');
+            } else {
+                tabDailyShot.className = "flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-purple-600 border-b-2 border-purple-600 transition-all flex items-center justify-center gap-1.5 bg-white";
+                tabMaintenance.className = "flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-500 border-b-2 border-transparent hover:text-slate-700 transition-all flex items-center justify-center gap-1.5 bg-slate-50/50";
+                formMaintenance.classList.add('hidden');
+                formDailyShot.classList.remove('hidden');
+                
+                const dsSearch = document.getElementById('ds-mold-search');
+                if (dsSearch) dsSearch.value = '';
+                updateDailyShotMoldOptions();
+            }
+        };
+
+        function renderApp(filteredData = null) {
+            const dataToRender = filteredData !== null ? filteredData : logBookEntries;
+            calculateKPIs();
+
+            const tbody = document.getElementById('log-table-body');
+            const emptyState = document.getElementById('table-empty-state');
+            tbody.innerHTML = '';
+
+            if (dataToRender.length === 0) {
+                emptyState.classList.remove('hidden');
+                document.getElementById('showing-records').innerText = `Menampilkan 0 data`;
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            document.getElementById('showing-records').innerText = `Menampilkan ${dataToRender.length} dari ${logBookEntries.length} log`;
+            const sortedData = [...dataToRender].sort((a, b) => new Date(b.time) - new Date(a.time));
+
+            sortedData.forEach((entry, idx) => {
+                const globalIdx = logBookEntries.findIndex(item => item.id === entry.id);
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-50/80 transition-colors border-b border-slate-100 group";
+
+                let activityBadge = '';
+                if (entry.activityType === 'Preventive') {
+                    activityBadge = `<span class="inline-flex items-center gap-1 bg-blue-50 text-blue-600 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border border-blue-200" title="Preventive Maintenance">PM</span>`;
+                } else if (entry.activityType === 'Corrective') {
+                    activityBadge = `<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border border-amber-200" title="Corrective Maintenance">CM</span>`;
+                } else {
+                    activityBadge = `<span class="inline-flex items-center gap-1 bg-purple-50 text-purple-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border border-purple-200" title="Daily Shoot Record">DSR</span>`;
+                }
+
+                let statusBadge = '';
+                if (entry.status === 'Running') {
+                    statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">Running</span>`;
+                } else if (entry.status === 'Finish Maintenance') {
+                    statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md bg-blue-50 text-blue-700 border border-blue-200">Ready</span>`;
+                } else {
+                    statusBadge = `<span class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-md bg-rose-50 text-rose-700 border border-rose-200 animate-pulse">Pending Sp</span>`;
+                }
+
+                let nextPmTargetHTML = '<span class="text-slate-400 italic text-xs">-</span>';
+                if (entry.activityType === 'Preventive') {
+                    const nextDate = new Date(entry.time);
+                    const isDiscontinued = (entry.moldCategory === 'Discontinued (Service Mold)');
+                    nextDate.setMonth(nextDate.getMonth() + (isDiscontinued ? 12 : 6));
+                    const nextDateFormatted = nextDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const nextShotTarget = Number(entry.shotCount) + 20000;
+                    
+                    nextPmTargetHTML = `
+                        <div class="text-xs space-y-1">
+                            <div class="text-blue-600 font-bold"><i class="fa-regular fa-calendar"></i> ${nextDateFormatted}</div>
+                            <div class="text-emerald-600 font-mono font-bold"><i class="fa-solid fa-gauge"></i> ${nextShotTarget.toLocaleString('id-ID')} Shots</div>
+                        </div>
+                    `;
+                }
+
+                const dateObj = new Date(entry.time);
+                const dateFormatted = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                const timeFormatted = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+                const primaryMC = entry.machineNumber ? `${escapeHTML(entry.machineNumber)} (${escapeHTML(entry.tonnage || '-')})` : '-';
+                const secondaryMC = entry.machineNumber2 ? `${escapeHTML(entry.machineNumber2)} (${escapeHTML(entry.tonnage2 || '-')})` : '';
+
+                row.innerHTML = `
+                    <td class="py-4 px-4 text-center text-slate-400 font-mono font-bold">${idx + 1}</td>
+                    <td class="py-4 px-4 font-mono text-xs">
+                        <div class="text-slate-800 font-bold">${dateFormatted}</div>
+                        <div class="text-slate-500 text-[10px] mt-0.5"><i class="fa-regular fa-clock"></i> ${timeFormatted} WIB</div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-slate-900 font-bold text-sm tracking-wide">${escapeHTML(entry.moldName)}</span>
+                            ${getCategoryBadge(entry.moldCategory)}
+                        </div>
+                        <div class="text-[11px] text-slate-400"><span class="font-bold">P/N:</span> ${escapeHTML(entry.partNumber)}</div>
+                        <div class="text-[10px] text-brand-600 font-bold mt-1 flex flex-wrap items-center gap-x-2">
+                            <span><i class="fa-solid fa-car text-[9px] mr-1"></i>${escapeHTML(entry.model)}</span>
+                            <span>|</span><span>${escapeHTML(entry.customer)}</span>
+                        </div>
+                        <div class="text-[10px] text-slate-500 font-semibold mt-1.5 flex flex-wrap items-center gap-1">
+                            <span class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-200/60 font-mono">M1: ${primaryMC}</span>
+                            ${secondaryMC ? `<span class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-200/60 font-mono">M2: ${secondaryMC}</span>` : ''}
+                            <span class="bg-blue-50 text-blue-800 px-1.5 py-0.5 rounded border border-blue-200 font-mono">Resin: ${escapeHTML(entry.materialResin || '-')} [${escapeHTML(entry.resinCode || '-')}]</span>
+                            <span class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-200/60 font-mono">Runner: ${escapeHTML(entry.runnerType || '-')}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4 text-center">${activityBadge}</td>
+                    <td class="py-4 px-4">${nextPmTargetHTML}</td>
+                    <td class="py-4 px-4 max-w-xs break-words">
+                        <div class="text-xs text-slate-500 font-bold">Detail Acuan / Log:</div>
+                        <div class="text-xs text-slate-600 italic line-clamp-1 group-hover:line-clamp-none">${escapeHTML(entry.detailProblem)}</div>
+                        <div class="text-xs text-slate-500 font-bold mt-2">Tindakan / Solusi:</div>
+                        <div class="text-xs text-slate-600 line-clamp-1 group-hover:line-clamp-none">${escapeHTML(entry.actionTaken)}</div>
+                    </td>
+                    <td class="py-4 px-4 text-right font-mono text-xs font-bold text-slate-700">
+                        ${Number(entry.shotCount).toLocaleString('id-ID')} <span class="text-[9px] text-slate-400 font-normal block">Shots</span>
+                    </td>
+                    <td class="py-4 px-4 text-center">
+                        <div class="text-xs text-slate-800 font-bold">${escapeHTML(entry.pic)}</div>
+                    </td>
+                    <td class="py-4 px-4 text-center">${statusBadge}</td>
+                    <td class="py-4 px-4 text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                            <button onclick="editEntry(${globalIdx})" class="p-2 bg-slate-100 hover:bg-brand-50 text-slate-500 hover:text-brand-600 rounded-lg border border-slate-200"><i class="fa-solid fa-pen-to-square text-xs"></i></button>
+                            <button onclick="requestDeleteEntry(${globalIdx})" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded-lg border border-slate-200"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function calculateKPIs() {
+            const uniqueMolds = new Set(logBookEntries.map(entry => entry.moldName.trim().toUpperCase()));
+            document.getElementById('kpi-total-mold').innerText = uniqueMolds.size;
+
+            document.getElementById('kpi-total-pm').innerText = logBookEntries.filter(e => e.activityType === 'Preventive').length;
+            document.getElementById('kpi-total-cm').innerText = logBookEntries.filter(e => e.activityType === 'Corrective').length;
+
+            if (logBookEntries.length > 0) {
+                let highest = logBookEntries[0];
+                let maxShot = getMoldCurrentShots(highest.moldName);
+                logBookEntries.forEach(entry => {
+                    const currentShot = getMoldCurrentShots(entry.moldName);
+                    if (currentShot > maxShot) {
+                        highest = entry;
+                        maxShot = currentShot;
+                    }
+                });
+                document.getElementById('kpi-highest-shot').innerText = highest.moldName;
+                document.getElementById('kpi-highest-shot-value').innerText = `${maxShot.toLocaleString('id-ID')} Shots`;
+            } else {
+                document.getElementById('kpi-highest-shot').innerText = 'N/A';
+                document.getElementById('kpi-highest-shot-value').innerText = '0 Shots';
+            }
+            calculateDashboardClassificationCounters();
+        }
+
+        function calculateDashboardClassificationCounters() {
+            const uniqueMoldsMap = {};
+            logBookEntries.forEach(entry => {
+                uniqueMoldsMap[entry.moldName.trim().toUpperCase()] = entry.moldCategory || 'Molding Active';
+            });
+
+            let totalAll = 0, totalActive = 0, totalDiscontinued = 0;
+            Object.values(uniqueMoldsMap).forEach(category => {
+                totalAll++;
+                if (category === 'Discontinued (Service Mold)') totalDiscontinued++; else totalActive++;
+            });
+
+            document.getElementById('badge-count-all').innerText = totalAll;
+            document.getElementById('badge-count-active').innerText = totalActive;
+            document.getElementById('badge-count-discontinued').innerText = totalDiscontinued;
+        }
+
+        window.setDirectoryClassification = function(type) {
+            selectedDirectoryClassification = type;
+            const btnAll = document.getElementById('btn-class-all');
+            const btnActive = document.getElementById('btn-class-active');
+            const btnDiscontinued = document.getElementById('btn-class-discontinued');
+
+            [btnAll, btnActive, btnDiscontinued].forEach(btn => {
+                btn.className = "px-2 py-1.5 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5 bg-white text-slate-600 border border-slate-200";
+            });
+
+            if (type === 'all') btnAll.className = "px-2 py-1.5 rounded-md text-xs font-bold bg-brand-500 text-white shadow-xs";
+            else if (type === 'active') btnActive.className = "px-2 py-1.5 rounded-md text-xs font-bold bg-emerald-600 text-white shadow-xs";
+            else if (type === 'discontinued') btnDiscontinued.className = "px-2 py-1.5 rounded-md text-xs font-bold bg-rose-600 text-white shadow-xs";
+
+            handleDirectorySearch();
+        }
+
+        function renderMonthlyResume() {
+            const grid = document.getElementById('monthly-resume-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const selectedYear = parseInt(document.getElementById('resume-year-select').value, 10);
+            const months = [
+                { id: 0, name: 'Jan' }, { id: 1, name: 'Feb' }, { id: 2, name: 'Mar' }, { id: 3, name: 'Apr' },
+                { id: 4, name: 'Mei' }, { id: 5, name: 'Jun' }, { id: 6, name: 'Jul' }, { id: 7, name: 'Agu' },
+                { id: 8, name: 'Sep' }, { id: 9, name: 'Okt' }, { id: 10, name: 'Nov' }, { id: 11, name: 'Des' }
+            ];
+
+            const resumeData = Array.from({ length: 12 }, () => ({ pm: 0, cm: 0, dsr: 0 }));
+            logBookEntries.forEach(entry => {
+                const date = new Date(entry.time);
+                if (date.getFullYear() === selectedYear) {
+                    const monthIdx = date.getMonth();
+                    if (entry.activityType === 'Preventive') resumeData[monthIdx].pm++;
+                    else if (entry.activityType === 'Corrective') resumeData[monthIdx].cm++;
+                    else if (entry.activityType === 'Daily Shoot Record') resumeData[monthIdx].dsr++;
+                }
+            });
+
+            months.forEach(month => {
+                const data = resumeData[month.id];
+                const total = data.pm + data.cm + data.dsr;
+                const card = document.createElement('div');
+                card.className = `p-2.5 rounded-xl border flex flex-col justify-between ${total > 0 ? 'bg-slate-50 border-slate-200' : 'bg-slate-50/40 border-slate-100 text-slate-400'}`;
+                
+                let actionElementsHTML = '';
+                if (total > 0) {
+                    actionElementsHTML = `
+                        <div class="flex items-center justify-center gap-1 mt-1.5">
+                            <button onclick="showResumeActivityDetail(${selectedYear}, ${month.id}, 'Preventive', '${month.name}')" 
+                                    class="text-[9px] font-extrabold text-blue-600 bg-blue-100/80 hover:bg-blue-600 hover:text-white px-1.5 py-0.5 rounded cursor-pointer transition-all" 
+                                    title="Klik untuk detail PM: ${data.pm}">${data.pm}</button>
+                            <button onclick="showResumeActivityDetail(${selectedYear}, ${month.id}, 'Corrective', '${month.name}')" 
+                                    class="text-[9px] font-extrabold text-amber-600 bg-amber-100/80 hover:bg-amber-600 hover:text-white px-1.5 py-0.5 rounded cursor-pointer transition-all" 
+                                    title="Klik untuk detail CM: ${data.cm}">${data.cm}</button>
+                            <button onclick="showResumeActivityDetail(${selectedYear}, ${month.id}, 'Daily Shoot Record', '${month.name}')" 
+                                    class="text-[9px] font-extrabold text-purple-600 bg-purple-100/80 hover:bg-purple-600 hover:text-white px-1.5 py-0.5 rounded cursor-pointer transition-all" 
+                                    title="Klik untuk detail DSR: ${data.dsr}">${data.dsr}</button>
+                        </div>
+                        <button onclick="showResumeActivityDetail(${selectedYear}, ${month.id}, 'ALL', '${month.name}')" 
+                                class="text-[9px] text-slate-500 hover:text-brand-500 font-bold mt-1.5 block w-full text-center hover:underline cursor-pointer">
+                            Total: ${total}
+                        </button>
+                    `;
+                } else {
+                    actionElementsHTML = `
+                        <div class="flex items-center justify-center gap-1 mt-1.5 opacity-40">
+                            <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">0</span>
+                            <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">0</span>
+                            <span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">0</span>
+                        </div>
+                        <span class="text-[9px] text-slate-300 font-bold mt-1.5 block w-full text-center">Total: 0</span>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="text-xs font-bold text-slate-700">${month.name}</div>
+                    ${actionElementsHTML}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.showResumeActivityDetail = function(year, monthIdx, activityType, monthName) {
+            const titleEl = document.getElementById('resume-modal-title');
+            const subtitleEl = document.getElementById('resume-modal-subtitle');
+            const tbody = document.getElementById('resume-detail-table-body');
+            const emptyEl = document.getElementById('resume-detail-empty');
+
+            if (!titleEl || !tbody) return;
+
+            let typeLabel = activityType;
+            if (activityType === 'Preventive') typeLabel = 'Preventive Maintenance (PM)';
+            else if (activityType === 'Corrective') typeLabel = 'Corrective Maintenance (CM)';
+            else if (activityType === 'Daily Shoot Record') typeLabel = 'Daily Shoot Record (DSR)';
+            else typeLabel = 'Semua Aktivitas';
+
+            titleEl.innerText = `Detail: ${typeLabel}`;
+            subtitleEl.innerText = `Periode: ${monthName} ${year}`;
+
+            const filtered = logBookEntries.filter(entry => {
+                const date = new Date(entry.time);
+                const matchesDate = date.getFullYear() === year && date.getMonth() === monthIdx;
+                const matchesType = activityType === 'ALL' || entry.activityType === activityType;
+                return matchesDate && matchesType;
+            });
+
+            tbody.innerHTML = '';
+            if (filtered.length === 0) {
+                emptyEl.classList.remove('hidden');
+            } else {
+                emptyEl.classList.add('hidden');
+                filtered.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+                filtered.forEach(entry => {
+                    const dateObj = new Date(entry.time);
+                    const dateFormatted = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const timeFormatted = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    
+                    let badgeClass = 'text-blue-600 bg-blue-50 border-blue-200';
+                    if (entry.activityType === 'Corrective') badgeClass = 'text-amber-700 bg-amber-50 border-amber-200';
+                    if (entry.activityType === 'Daily Shoot Record') badgeClass = 'text-purple-700 bg-purple-50 border-purple-200';
+
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-50 transition-colors border-b border-slate-100";
+                    row.innerHTML = `
+                        <td class="py-3 px-3 font-mono">
+                            <div class="font-bold text-slate-800">${dateFormatted}</div>
+                            <div class="text-[10px] text-slate-500">${timeFormatted} WIB</div>
+                        </td>
+                        <td class="py-3 px-3">
+                            <div class="font-bold text-slate-900">${escapeHTML(entry.moldName)}</div>
+                            <div class="text-[10px] text-brand-600 font-bold">${escapeHTML(entry.model)}</div>
+                        </td>
+                        <td class="py-3 px-3">
+                            <span class="inline-block text-[9px] font-extrabold px-2 py-0.5 rounded border ${badgeClass}">
+                                ${entry.activityType === 'Daily Shoot Record' ? 'DSR' : (entry.activityType === 'Preventive' ? 'PM' : 'CM')}
+                            </span>
+                        </td>
+                        <td class="py-3 px-3 max-w-xs break-words whitespace-normal text-slate-600">
+                            <div>
+                                <span class="font-bold text-slate-700">Detail / Deskripsi:</span> ${escapeHTML(entry.detailProblem)}<br/>
+                                <span class="font-bold text-slate-700 mt-1 block">Tindakan:</span> ${escapeHTML(entry.actionTaken)}
+                            </div>
+                        </td>
+                        <td class="py-3 px-3 text-right font-mono font-bold text-slate-800">
+                            ${Number(entry.shotCount).toLocaleString('id-ID')}
+                        </td>
+                        <td class="py-3 px-3 text-center text-slate-800 font-semibold">
+                            ${escapeHTML(entry.pic)}
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            document.getElementById('resume-detail-modal').classList.remove('hidden');
+        };
+
+        window.closeResumeDetailModal = function() {
+            document.getElementById('resume-detail-modal').classList.add('hidden');
+        };
+
+        function renderPMProjection() {
+            const grid = document.getElementById('pm-projection-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const projectedYear = parseInt(document.getElementById('projection-year-select').value, 10);
+            const months = [
+                { id: 0, name: 'Januari' }, { id: 1, name: 'Februari' }, { id: 2, name: 'Maret' }, { id: 3, name: 'April' },
+                { id: 4, name: 'Mei' }, { id: 5, name: 'Juni' }, { id: 6, name: 'Juli' }, { id: 7, name: 'Agustus' },
+                { id: 8, name: 'September' }, { id: 9, name: 'Oktober' }, { id: 10, name: 'November' }, { id: 11, name: 'Desember' }
+            ];
+
+            monthlyPmDueMoldsData = Array.from({ length: 12 }, () => []);
+            const latestMoldLogs = {};
+            logBookEntries.forEach(entry => {
+                const mName = entry.moldName.trim().toUpperCase();
+                if (!latestMoldLogs[mName] || new Date(entry.time) > new Date(latestMoldLogs[mName].time)) latestMoldLogs[mName] = entry;
+            });
+
+            const today = new Date();
+            const alertContainer = document.getElementById('pm-urgency-alerts');
+            let alertCardsHTML = '';
+
+            Object.values(latestMoldLogs).forEach(m => {
+                const nextPmDate = new Date(m.time);
+                const isDiscontinued = (m.moldCategory === 'Discontinued (Service Mold)');
+                nextPmDate.setMonth(nextPmDate.getMonth() + (isDiscontinued ? 12 : 6));
+
+                if (nextPmDate.getFullYear() === projectedYear) {
+                    monthlyPmDueMoldsData[nextPmDate.getMonth()].push({ ...m, projectedPmDate: nextPmDate, isDiscontinued });
+                }
+
+                const daysOverdue = Math.floor((today - nextPmDate) / (1000 * 60 * 60 * 24));
+                if (daysOverdue > 0) {
+                    alertCardsHTML += `
+                        <div class="bg-rose-50 border border-rose-200 rounded-lg p-3 flex items-center justify-between gap-3">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">${escapeHTML(m.moldName)} <span class="bg-rose-200 text-rose-800 text-[9px] px-1 rounded">Lewat ${daysOverdue} Hari</span></h4>
+                                <p class="text-[10px] text-slate-500">Model: ${escapeHTML(m.model)}</p>
+                            </div>
+                            <button onclick="createNewActivityFor('${m.moldName.replace(/'/g, "\\'")}')" class="text-[10px] font-bold bg-rose-600 text-white py-1 px-2.5 rounded">Kerjakan PM</button>
+                        </div>
+                    `;
+                }
+            });
+
+            alertContainer.innerHTML = alertCardsHTML || `<div class="bg-emerald-50 border border-emerald-100 rounded-lg p-4 text-center text-xs text-emerald-700 col-span-2">Sistem Aman! Semua cetakan dalam kondisi wajar.</div>`;
+
+            months.forEach((month, idx) => {
+                const count = monthlyPmDueMoldsData[idx].length;
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-lg border text-center cursor-pointer ${count > 0 ? 'bg-blue-50 border-blue-200' : 'bg-slate-50/50 border-slate-100 text-slate-400'}`;
+                card.onclick = () => selectMonthForPmProjection(idx, month.name, projectedYear);
+                card.innerHTML = `
+                    <div class="text-xs font-bold text-slate-700">${month.name.substring(0, 3)}</div>
+                    <div class="text-lg font-extrabold text-blue-600 my-1">${count}</div>
+                    <div class="text-[9px] text-slate-400 font-semibold">Scheduled</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.selectMonthForPmProjection = function(monthIdx, monthName, year) {
+            document.getElementById('projected-month-title').innerText = `${monthName} ${year}`;
+            const list = monthlyPmDueMoldsData[monthIdx] || [];
+            document.getElementById('projected-month-badge').innerText = `${list.length} Mold`;
+
+            const listContainer = document.getElementById('projected-month-list');
+            listContainer.innerHTML = '';
+
+            if (list.length === 0) {
+                listContainer.innerHTML = `<div class="text-slate-400 text-center py-10 italic text-[11px]">Tidak ada mold terjadwal.</div>`;
+                return;
+            }
+
+            list.forEach(m => {
+                const estDate = m.projectedPmDate ? m.projectedPmDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }) : '-';
+                const div = document.createElement('div');
+                div.className = "p-3 bg-white border border-slate-200 rounded-xl flex flex-col gap-2";
+                div.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="text-xs font-bold text-slate-800 truncate">${escapeHTML(m.moldName)}</div>
+                            <div class="text-[10px] text-brand-600 font-bold"><i class="fa-solid fa-car text-[8px]"></i> ${escapeHTML(m.model)}</div>
+                        </div>
+                        <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">Est: ${estDate}</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-slate-100 pt-2">
+                        <span class="text-[9px] text-slate-400">M/C: ${escapeHTML(m.machineNumber || '-')}</span>
+                        <button onclick="createNewActivityFor('${m.moldName.replace(/'/g, "\\'")}')" class="text-[9px] font-bold bg-blue-100 text-blue-700 px-2.5 py-1 rounded">Proses PM</button>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+        }
+
+        function handleDirectorySearch() {
+            const query = document.getElementById('directory-search').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('directory-results');
+            if (!resultsContainer) return;
+
+            const uniqueMoldsMap = {};
+            logBookEntries.forEach(entry => {
+                const mName = entry.moldName.trim().toUpperCase();
+                if (!uniqueMoldsMap[mName]) {
+                    uniqueMoldsMap[mName] = { ...entry, lastTime: entry.time, lastShot: getMoldCurrentShots(entry.moldName), pmCount: 0, cmCount: 0, totalActivities: 0 };
+                }
+                if (new Date(entry.time) > new Date(uniqueMoldsMap[mName].lastTime)) {
+                    uniqueMoldsMap[mName] = { ...uniqueMoldsMap[mName], ...entry, lastTime: entry.time };
+                }
+                uniqueMoldsMap[mName].lastShot = getMoldCurrentShots(entry.moldName);
+                uniqueMoldsMap[mName].totalActivities++;
+            });
+
+            let uniqueMoldsArray = Object.values(uniqueMoldsMap);
+            if (selectedDirectoryClassification === 'active') uniqueMoldsArray = uniqueMoldsArray.filter(m => m.moldCategory !== 'Discontinued (Service Mold)');
+            else if (selectedDirectoryClassification === 'discontinued') uniqueMoldsArray = uniqueMoldsArray.filter(m => m.moldCategory === 'Discontinued (Service Mold)');
+
+            const filtered = uniqueMoldsArray.filter(m => m.model.toLowerCase().includes(query) || m.partNumber.toLowerCase().includes(query) || m.moldName.toLowerCase().includes(query));
+            resultsContainer.innerHTML = '';
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = `<div class="text-slate-400 text-center py-8 italic">Tidak menemukan hasil cocok.</div>`;
+                return;
+            }
+
+            filtered.forEach(m => {
+                const card = document.createElement('div');
+                card.className = "p-2.5 bg-white border border-slate-100 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 shadow-xs";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-2"><span class="font-bold text-slate-800">${escapeHTML(m.moldName)}</span>${getCategoryBadge(m.moldCategory)}</div>
+                        <div class="text-[10px] text-brand-600 font-bold">Model: ${escapeHTML(m.model)} | ${escapeHTML(m.customer)}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-mono text-slate-800 font-bold text-xs">${Number(m.lastShot).toLocaleString('id-ID')} Shots</div>
+                        <div class="mt-1 flex gap-1.5">
+                            <button onclick="createNewActivityFor('${m.moldName.replace(/'/g, "\\'")}')" class="text-[10px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded border border-emerald-200 hover:bg-emerald-100">+ Log Baru</button>
+                            <button onclick="showMoldHistory('${m.moldName.replace(/'/g, "\\'")}')" class="text-[10px] bg-brand-50 text-brand-600 px-2 py-0.5 rounded border border-brand-200 hover:bg-brand-100">Histori (${m.totalActivities})</button>
+                        </div>
+                    </div>
+                `;
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        function handleMoldInput(val) {
+            const historicalMatch = logBookEntries.find(entry => entry.moldName.trim().toUpperCase() === val.trim().toUpperCase());
+            if (historicalMatch) {
+                document.getElementById('part-number').value = historicalMatch.partNumber;
+                document.getElementById('model-name').value = historicalMatch.model;
+                document.getElementById('customer-name').value = historicalMatch.customer;
+                document.getElementById('machine-number').value = historicalMatch.machineNumber || '';
+                document.getElementById('tonnage').value = historicalMatch.tonnage || '';
+                document.getElementById('machine-number-2').value = historicalMatch.machineNumber2 || '';
+                document.getElementById('tonnage-2').value = historicalMatch.tonnage2 || '';
+                document.getElementById('material-resin').value = historicalMatch.materialResin || '';
+                document.getElementById('resin-code').value = historicalMatch.resinCode || '';
+                document.getElementById('runner-type').value = historicalMatch.runnerType || 'Cold Runner';
+                document.getElementById('mold-category').value = historicalMatch.moldCategory || 'Molding Active';
+            }
+        }
+
+        window.createNewActivityFor = function(moldName) {
+            const matches = logBookEntries.filter(entry => entry.moldName.trim().toUpperCase() === moldName.trim().toUpperCase());
+            if (matches.length === 0) return;
+            matches.sort((a, b) => new Date(b.time) - new Date(a.time));
+            const latest = matches[0];
+
+            switchFormTab('maintenance');
+            resetForm();
+            document.getElementById('mold-name').value = latest.moldName;
+            handleMoldInput(latest.moldName);
+            document.getElementById('shot-count').value = getMoldCurrentShots(latest.moldName);
+            document.getElementById('detail-problem').focus();
+            showToast(`Form log aktivitas baru cetakan ${latest.moldName} siap.`, 'success');
+        };
+
+        function updateMoldDatalist() {
+            const datalist = document.getElementById('mold-options');
+            if (!datalist) return; datalist.innerHTML = '';
+            const uniqueMolds = new Set(logBookEntries.map(e => e.moldName.trim().toUpperCase()));
+            uniqueMolds.forEach(mold => {
+                const option = document.createElement('option'); option.value = mold; datalist.appendChild(option);
+            });
+            updateDailyShotMoldOptions();
+        }
+
+        window.updateDailyShotMoldOptions = function(filterQuery = '') {
+            const select = document.getElementById('ds-mold-select');
+            if (!select) return;
+            const currentSelected = select.value;
+            select.innerHTML = '<option value="">-- Pilih Mold --</option>';
+
+            const latestMoldMap = {};
+            logBookEntries.forEach(entry => {
+                const mName = entry.moldName.trim().toUpperCase();
+                if (!latestMoldMap[mName] || new Date(entry.time) > new Date(latestMoldMap[mName].time)) {
+                    latestMoldMap[mName] = entry;
+                }
+            });
+
+            const uniqueMolds = Array.from(new Set(logBookEntries.map(e => e.moldName.trim()))).sort();
+            const query = filterQuery.toLowerCase().trim();
+
+            uniqueMolds.forEach(mold => {
+                const key = mold.toUpperCase();
+                const modelInfo = latestMoldMap[key] ? latestMoldMap[key].model : '';
+                const textToMatch = `${mold} ${modelInfo}`.toLowerCase();
+
+                if (!query || textToMatch.includes(query)) {
+                    const option = document.createElement('option');
+                    option.value = mold;
+                    option.textContent = `${mold} (${modelInfo || 'Tanpa Model'})`;
+                    select.appendChild(option);
+                }
+            });
+
+            const optionExists = Array.from(select.options).some(opt => opt.value === currentSelected);
+            if (currentSelected && optionExists) {
+                select.value = currentSelected;
+            } else {
+                select.value = "";
+                handleDailyShotMoldChange("");
+            }
+        };
+
+        window.filterDailyShotMolds = function(value) {
+            updateDailyShotMoldOptions(value);
+        };
+
+        window.handleDailyShotMoldChange = function(moldName) {
+            const infoCard = document.getElementById('ds-mold-info-card');
+            if (!moldName) {
+                infoCard.classList.add('hidden');
+                return;
+            }
+
+            const moldLogs = logBookEntries.filter(e => e.moldName.trim().toLowerCase() === moldName.trim().toLowerCase());
+            if (moldLogs.length === 0) {
+                infoCard.classList.add('hidden');
+                return;
+            }
+
+            moldLogs.sort((a, b) => new Date(b.time) - new Date(a.time));
+            const latest = moldLogs[0];
+
+            document.getElementById('ds-info-name').innerText = latest.moldName;
+            document.getElementById('ds-info-category').className = `text-[10px] font-bold px-2 py-0.5 rounded-full ${latest.moldCategory === 'Discontinued (Service Mold)' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}`;
+            document.getElementById('ds-info-category').innerText = latest.moldCategory === 'Discontinued (Service Mold)' ? 'Svc' : 'Active';
+            document.getElementById('ds-info-part').innerText = latest.partNumber;
+            document.getElementById('ds-info-model').innerText = latest.model;
+            document.getElementById('ds-info-shots').innerText = getMoldCurrentShots(latest.moldName).toLocaleString('id-ID');
+
+            infoCard.classList.remove('hidden');
+            calculateAccumulatedShots();
+        };
+
+        window.calculateAccumulatedShots = function() {
+            const moldName = document.getElementById('ds-mold-select').value;
+            const increment = parseInt(document.getElementById('ds-increment').value, 10) || 0;
+            const display = document.getElementById('ds-projected-shots');
+
+            if (!moldName) {
+                display.innerText = '0';
+                return;
+            }
+
+            const accumulated = getMoldCurrentShots(moldName) + increment;
+            display.innerText = accumulated.toLocaleString('id-ID');
+        };
+
+        window.handleDailyShotSubmit = function(e) {
+            e.preventDefault();
+            const moldName = document.getElementById('ds-mold-select').value;
+            const increment = parseInt(document.getElementById('ds-increment').value, 10) || 0;
+            const pic = document.getElementById('ds-pic').value.trim();
+            const time = document.getElementById('ds-time').value;
+
+            if (!moldName || increment <= 0 || !pic || !time) {
+                showToast("Harap isi seluruh inputan dengan benar!", "warning");
+                return;
+            }
+
+            const moldLogs = logBookEntries.filter(e => e.moldName.trim().toLowerCase() === moldName.trim().toLowerCase());
+            if (moldLogs.length === 0) {
+                showToast("Data referensi cetakan asal tidak ditemukan!", "danger");
+                return;
+            }
+
+            moldLogs.sort((a, b) => new Date(b.time) - new Date(a.time));
+            const latest = moldLogs[0];
+            const accumulatedShots = getMoldCurrentShots(moldName) + increment;
+
+            const payload = {
+                id: 'log_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now(),
+                moldName: latest.moldName,
+                partNumber: latest.partNumber,         
+                model: latest.model,                   
+                customer: latest.customer,             
+                machineNumber: latest.machineNumber || '',
+                tonnage: latest.tonnage || '',
+                machineNumber2: latest.machineNumber2 || '',
+                tonnage2: latest.tonnage2 || '',
+                materialResin: latest.materialResin || '',
+                resinCode: latest.resinCode || '',
+                runnerType: latest.runnerType || 'Cold Runner',
+                moldCategory: latest.moldCategory || 'Molding Active',
+                activityType: 'Daily Shoot Record',    
+                detailProblem: 'Pencatatan Shoot Harian (Daily Shoot Record)',
+                actionTaken: `Penambahan shots sebanyak +${increment.toLocaleString('id-ID')}, akumulasi total menjadi ${accumulatedShots.toLocaleString('id-ID')} shots.`,
+                shotCount: accumulatedShots,           
+                pic: pic,
+                status: latest.status || 'Running',
+                time: time
+            };
+
+            requestSecurityAuthorization("Simpan Daily Shoot Record", () => {
+                logBookEntries.push(payload);
+                saveToLocalStorage();
+
+                document.getElementById('ds-increment').value = '';
+                document.getElementById('ds-mold-select').value = '';
+                
+                const dsSearch = document.getElementById('ds-mold-search');
+                if (dsSearch) dsSearch.value = '';
+                
+                document.getElementById('ds-mold-info-card').classList.add('hidden');
+                document.getElementById('ds-projected-shots').innerText = '0';
+
+                updateMoldDatalist();
+                renderApp();
+                renderMonthlyResume();
+                renderPMProjection();
+                handleDirectorySearch();
+
+                showToast(`Sukses mencatat harian +${increment.toLocaleString('id-ID')} shoot ke ${latest.moldName}!`, "success");
+            });
+        };
+
+        window.showMoldHistory = function(moldName) {
+            const history = logBookEntries.filter(e => e.moldName.trim().toUpperCase() === moldName.trim().toUpperCase()).sort((a, b) => new Date(b.time) - new Date(a.time));
+            if (history.length === 0) return;
+
+            const latest = history[0];
+            document.getElementById('history-mold-title').innerText = latest.moldName;
+            document.getElementById('history-mold-subtitle').innerText = `P/N: ${latest.partNumber}`;
+
+            const totalPM = history.filter(h => h.activityType === 'Preventive').length;
+            const totalCM = history.filter(h => h.activityType === 'Corrective').length;
+            const totalDSR = history.filter(h => h.activityType === 'Daily Shoot Record').length;
+            const currentTotalShots = getMoldCurrentShots(moldName);
+
+            document.getElementById('history-mold-stats').innerHTML = `
+                <div><span class="text-[10px] text-slate-400 font-bold block">Model</span><span class="text-xs font-bold">${escapeHTML(latest.model)}</span></div>
+                <div><span class="text-[10px] text-slate-400 font-bold block">Mesin</span><span class="text-xs font-bold">${escapeHTML(latest.machineNumber || '-')}</span></div>
+                <div><span class="text-[10px] text-slate-400 font-bold block">Aktivitas</span><span class="text-xs font-bold text-blue-600">${totalPM} PM / ${totalCM} CM / ${totalDSR} DSR</span></div>
+                <div><span class="text-[10px] text-slate-400 font-bold block">Akurat Shot</span><span class="text-xs font-bold text-emerald-600">${currentTotalShots.toLocaleString('id-ID')}</span></div>
+            `;
+
+            const timelineContainer = document.getElementById('history-timeline');
+            timelineContainer.innerHTML = '';
+
+            history.forEach(item => {
+                const node = document.createElement('div');
+                node.className = "relative pl-6";
+                node.innerHTML = `
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs shadow-xs">
+                        <div class="flex justify-between font-bold">
+                            <span>${item.time.replace('T', ' ')}</span>
+                            <span class="${item.activityType === 'Daily Shoot Record' ? 'text-purple-600' : 'text-blue-600'}">${item.activityType}</span>
+                        </div>
+                        <p class="mt-1 text-slate-600"><b>Masalah / Catatan:</b> ${escapeHTML(item.detailProblem)}</p>
+                        <p class="text-slate-600"><b>Tindakan:</b> ${escapeHTML(item.actionTaken)}</p>
+                        <div class="text-[10px] text-slate-400 mt-1">PIC: ${escapeHTML(item.pic)} | Status: ${item.status} | Shots: ${Number(item.shotCount).toLocaleString('id-ID')}</div>
+                    </div>
+                `;
+                timelineContainer.appendChild(node);
+            });
+            document.getElementById('history-modal').classList.remove('hidden');
+        };
+
+        window.closeHistoryModal = function() { document.getElementById('history-modal').classList.add('hidden'); };
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const moldName = document.getElementById('mold-name').value.trim();
+            const payload = {
+                moldName,
+                partNumber: document.getElementById('part-number').value.trim(),
+                model: document.getElementById('model-name').value.trim(),
+                customer: document.getElementById('customer-name').value.trim(),
+                machineNumber: document.getElementById('machine-number').value.trim(),
+                tonnage: document.getElementById('tonnage').value.trim(),
+                machineNumber2: document.getElementById('machine-number-2').value.trim(),
+                tonnage2: document.getElementById('tonnage-2').value.trim(),
+                materialResin: document.getElementById('material-resin').value.trim(),
+                resinCode: document.getElementById('resin-code').value.trim(),
+                runnerType: document.getElementById('runner-type').value,
+                moldCategory: document.getElementById('mold-category').value,
+                activityType: document.querySelector('input[name="activity-type"]:checked').value,
+                detailProblem: document.getElementById('detail-problem').value.trim(),
+                actionTaken: document.getElementById('action-taken').value.trim(),
+                shotCount: parseInt(document.getElementById('shot-count').value, 10) || 0,
+                pic: document.getElementById('pic-name').value.trim(),
+                status: document.getElementById('mold-status').value,
+                time: document.getElementById('activity-time').value
+            };
+
+            const editIdxVal = document.getElementById('edit-index').value;
+            requestSecurityAuthorization(editIdxVal !== "" ? "Update Log" : "Tambah Log Baru", () => {
+                if (editIdxVal !== "") {
+                    const globalIdx = parseInt(editIdxVal, 10);
+                    payload.id = logBookEntries[globalIdx].id;
+                    logBookEntries[globalIdx] = payload;
+                } else {
+                    payload.id = 'log_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now();
+                    logBookEntries.push(payload);
+                }
+                saveToLocalStorage(); updateMoldDatalist(); resetForm(); renderApp(); renderMonthlyResume(); renderPMProjection(); handleDirectorySearch();
+                showToast("Data log sukses diproses!", "success");
+            });
+        }
+
+        window.editEntry = function(index) {
+            const entry = logBookEntries[index]; if (!entry) return;
+            switchFormTab('maintenance');
+            document.getElementById('edit-index').value = index;
+            document.getElementById('mold-name').value = entry.moldName;
+            document.getElementById('part-number').value = entry.partNumber;
+            document.getElementById('model-name').value = entry.model;
+            document.getElementById('machine-number').value = entry.machineNumber || '';
+            document.getElementById('tonnage').value = entry.tonnage || '';
+            document.getElementById('machine-number-2').value = entry.machineNumber2 || '';
+            document.getElementById('tonnage-2').value = entry.tonnage2 || '';
+            document.getElementById('material-resin').value = entry.materialResin || '';
+            document.getElementById('resin-code').value = entry.resinCode || '';
+            document.getElementById('runner-type').value = entry.runnerType;
+            document.getElementById('mold-category').value = entry.moldCategory || 'Molding Active';
+            document.getElementById('customer-name').value = entry.customer;
+            document.getElementById('activity-time').value = entry.time;
+            document.getElementsByName('activity-type').forEach(r => r.checked = (r.value === entry.activityType));
+            document.getElementById('detail-problem').value = entry.detailProblem;
+            document.getElementById('action-taken').value = entry.actionTaken;
+            document.getElementById('shot-count').value = entry.shotCount;
+            document.getElementById('pic-name').value = entry.pic;
+            document.getElementById('mold-status').value = entry.status;
+
+            document.getElementById('form-title').innerText = "Edit Log Mold - ID " + (index + 1);
+            document.getElementById('submit-text').innerText = "Perbarui Data Log";
+            document.getElementById('btn-cancel-edit').classList.remove('hidden');
+        };
+
+        window.resetForm = function() {
+            document.getElementById('logForm').reset();
+            document.getElementById('edit-index').value = "";
+            initDefaultDateTime();
+            document.getElementById('form-title').innerText = "Input Log Maintenance";
+            document.getElementById('submit-text').innerText = "Simpan Data Log";
+            document.getElementById('btn-cancel-edit').classList.add('hidden');
+        };
+
+        window.requestDeleteEntry = function(index) {
+            isWipeOperation = false; currentlyPendingDeleteIndex = index;
+            document.getElementById('modal-title').innerText = "Konfirmasi Hapus";
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        };
+
+        window.requestWipeDatabase = function() {
+            isWipeOperation = true;
+            document.getElementById('modal-title').innerText = "WIPE DATABASE!";
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        };
+
+        document.getElementById('confirm-cancel-btn').addEventListener('click', () => document.getElementById('confirm-modal').classList.add('hidden'));
+        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+            const isWipe = isWipeOperation; const targetIdx = currentlyPendingDeleteIndex;
+            document.getElementById('confirm-modal').classList.add('hidden');
+
+            if (isWipe) {
+                requestSecurityAuthorization("Wipe DB", () => {
+                    logBookEntries = []; localStorage.removeItem(APP_STORAGE_KEY);
+                    resetForm(); renderApp(); renderMonthlyResume(); renderPMProjection(); handleDirectorySearch(); updateMoldDatalist();
+                    showToast("Database dibersihkan.", "warning");
+                });
+            } else if (targetIdx !== null) {
+                requestSecurityAuthorization("Hapus Data", () => {
+                    logBookEntries.splice(targetIdx, 1); saveToLocalStorage();
+                    renderApp(); renderMonthlyResume(); renderPMProjection(); handleDirectorySearch(); updateMoldDatalist();
+                    showToast("Data log terhapus.", "warning");
+                });
+            }
+        });
+
+        function requestSecurityAuthorization(description, callback) {
+            authorizedActionCallback = callback;
+            document.getElementById('security-modal-desc').innerHTML = `Otorisasi untuk: <b>${description}</b>`;
+            document.getElementById('security-password-input').value = '';
+            document.getElementById('security-error-msg').classList.add('hidden');
+            document.getElementById('security-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('security-password-input').focus(), 150);
+        }
+
+        function verifySecurityAction() {
+            const passwordValue = document.getElementById('security-password-input').value;
+            if (passwordValue === SECURITY_KEY) {
+                const actionToExecute = authorizedActionCallback;
+                closeSecurityModal();
+                if (typeof actionToExecute === 'function') actionToExecute();
+            } else {
+                document.getElementById('security-error-msg').classList.remove('hidden');
+            }
+        }
+
+        function closeSecurityModal() {
+            document.getElementById('security-modal').classList.add('hidden');
+            authorizedActionCallback = null;
+        }
+
+        function setupSecurityListeners() {
+            document.getElementById('security-password-input').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); verifySecurityAction(); }
+            });
+        }
+
+        window.filterData = function() {
+            const q = document.getElementById('search-input').value.toLowerCase().trim();
+            const cat = document.getElementById('filter-mold-category').value;
+            const act = document.getElementById('filter-activity').value;
+            const stat = document.getElementById('filter-status').value;
+
+            const filtered = logBookEntries.filter(e => {
+                const mSearch = e.moldName.toLowerCase().includes(q) || e.partNumber.toLowerCase().includes(q) || e.model.toLowerCase().includes(q) || e.pic.toLowerCase().includes(q);
+                const mCat = cat === "" || (e.moldCategory || "Molding Active") === cat;
+                const mAct = act === "" || e.activityType === act;
+                const mStat = stat === "" || e.status === stat;
+                return mSearch && mCat && mAct && mStat;
+            });
+            renderApp(filtered);
+        };
+
+        window.exportToCSV = function() {
+            if (logBookEntries.length === 0) { showToast('Tidak ada data.', 'warning'); return; }
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF\"No\",\"Tanggal\",\"Mold\",\"Part Number\",\"Model\",\"Customer\",\"Activity\",\"Shots\",\"PIC\",\"Status\"\n";
+            logBookEntries.forEach((e, idx) => {
+                csvContent += `"${idx+1}","${e.time}","${e.moldName}","${e.partNumber}","${e.model}","${e.customer}","${e.activityType}","${e.shotCount}","${e.pic}","${e.status}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `Moriroku_Log_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        };
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl border-l-4 bg-white shadow-xl max-w-sm border-${type === 'success' ? 'emerald' : 'amber'}-500 text-slate-800`;
+            toast.innerHTML = `<div class="text-xs font-bold">${message}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
